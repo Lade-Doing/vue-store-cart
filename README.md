@@ -6,7 +6,8 @@
 
 **关于 setup:**
 1、setup 中没有自己的 this
-2、setup 可以使用异步,也就是可以使用await,这样解决了初始化数据函数放哪里的问题
+2、setup 可以使用异步,也就是可以使用await,这个功能暂时处于实验阶段
+3、setup 从vue的生命周期角度来看，他比beforeCreate还要靠前调用
 ~~~
 async function Init() {
     console.log(11)
@@ -84,7 +85,7 @@ const fullName = computed(() => {
 ~~~
 
 **关于computed属性**
-在Vue 3中，computed属性的set函数不允许直接修改computed属性本身。如果你尝试直接赋值给computed属性，将会导致一个错误。
+在Vue 3中，computed属性的set函数不允许直接修改computed属性本身。如果你尝试直接赋值给computed属性，将会导致一个**错误**。
 
 如果你想要修改计算属性的值，你需要通过修改计算属性依赖的响应式数据来间接实现。在上面的示例代码中，我们使用了响应式数据products来作为计算属性computedProducts的依赖，并通过修改products.value来间接修改计算属性的值。
 
@@ -147,6 +148,26 @@ export const store = createStore({
 state.data.filter(item=>item.id)
 //箭头函数没有自己的this值,它会继承外层作用于的this值
 ```
+
+关于'...'在数组和对象中的用法
+~~~
+const obj1 = { a: 1, b: 2 }
+const obj2 = { c: 3, d: 5 }
+function objectOdd (){
+  return {...obj1, ...obj2}
+}
+objectOdd()
+
+const array1 = [1,2,3,4,5]
+const array2 = [6,7,8,9,10]
+function arrayOdd (){
+  return [...array1,...array2]
+}
+arrayOdd()
+~~~
+使用 ... 可以将一个对象中的所有属性解构出来，并将其合并到另一个对象中。这样可以方便地实现对象的浅拷贝和合并。
+需要注意的是，... 只会进行浅拷贝，即只复制对象的一层属性。如果对象中包含引用类型的属性，那么复制后的对象仍然会共享这些属性。如果需要进行深拷贝，则需要使用其他方法或工具库。
+>比如对象使用JSON.parse(JSON.stringify(obj))
 
 ## 常见的方法
 
